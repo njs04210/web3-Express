@@ -1,6 +1,8 @@
 var express = require('express')
 var app = express()
 var fs = require('fs');
+var path = require('path');
+var sanitizeHtml = require('sanitize-html');
 var template = require('./lib/template.js');
 
 app.get('/', function (request, response) {
@@ -18,9 +20,9 @@ app.get('/', function (request, response) {
 
 app.get('/page/:pageId', function (request, response) {
   fs.readdir('./data', function (error, filelist) {
-    var filteredId = path.parse(queryData.id).base;
+    var filteredId = path.parse(request.params.pageId).base;
     fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
-      var title = queryData.id;
+      var title = request.params.pageId;
       var sanitizedTitle = sanitizeHtml(title);
       var sanitizedDescription = sanitizeHtml(description, {
         allowedTags: ['h1']
