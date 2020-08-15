@@ -1,11 +1,11 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
 var fs = require('fs');
-var template = require('./lib/template.js');
-var qs = require('querystring');
 var bodyParser = require('body-parser');
 var compression = require('compression');
-var topicRouter = require('./routes/topic.js')
+var indexRouter = require('./routes/index.js');
+var topicRouter = require('./routes/topic.js');
+
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,20 +18,7 @@ app.get('*', function (request, response, next) {
   })
 });
 
-app.get('/', function (request, response) {
-  var title = 'Welcome';
-  var description = 'Hello, Node.js';
-  var list = template.list(request.list);
-  var html = template.HTML(title, list,
-    `
-    <h2>${title}</h2>
-    ${description}
-    <img src="/images/beach.jpeg" style="width:300px; margin-top:10px; display:block;">
-    `,
-    `<a href="/topic/create">create</a>`
-  );
-  response.send(html);
-});
+app.use('/', indexRouter);
 
 app.use('/topic', topicRouter);
 
